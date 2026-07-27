@@ -1,14 +1,27 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: Inter, system-ui, sans-serif;
-  background: #f8f9fa;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  min-height: 100%;
 }
 
 body {
-  min-height: 100vh;
+  @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+  margin: 0;
 }
 
 * {
   box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
