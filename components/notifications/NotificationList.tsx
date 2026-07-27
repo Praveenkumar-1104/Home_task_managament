@@ -1,3 +1,5 @@
+"use client";
+
 import NotificationItem from "@/components/notifications/NotificationItem";
 import { useNotificationContext } from "@/context/NotificationContext";
 

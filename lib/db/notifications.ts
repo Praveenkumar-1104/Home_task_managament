@@ -6,7 +6,7 @@ export async function getNotifications(userId: string, page = 1, pageSize = 20) 
   const to = from + pageSize - 1;
 
   const { data, error } = await getSupabase()
-    .from<Notification>("notifications")
+    .from("notifications")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
@@ -29,7 +29,7 @@ export async function getUnreadCount(userId: string) {
 
 export async function createNotification(notification: Omit<Notification, "id" | "created_at" | "is_read">) {
   const { data, error } = await getSupabase()
-    .from<Notification>("notifications")
+    .from("notifications")
     .insert({ ...notification, is_read: false })
     .select("*")
     .single();
