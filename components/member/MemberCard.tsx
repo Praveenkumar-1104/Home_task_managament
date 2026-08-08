@@ -9,41 +9,39 @@ export default function MemberCard({ member }: { member: Member }) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <div className="col-sm-6 col-lg-4">
-      <div className="card shadow-sm h-100">
-        <div className="card-body d-flex flex-column">
-          <div className="d-flex justify-content-between align-items-start mb-2">
-            <div className="d-flex align-items-center gap-2">
-              <span
-                className="badge rounded-pill d-inline-flex align-items-center justify-content-center"
-                style={{ backgroundColor: member.color, width: 32, height: 32 }}
-              >
-                {member.name[0]}
-              </span>
-              <div>
-                <strong>{member.name}</strong>
-                {member.email && <div className="small text-muted">{member.email}</div>}
-              </div>
-            </div>
-            <span className={`badge ${member.active ? "bg-success" : "bg-secondary"}`}>
-              {member.active ? "Active" : "Inactive"}
-            </span>
-          </div>
-          <div className="mt-auto d-flex justify-content-between align-items-center pt-2">
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-secondary"
-              disabled={isPending}
-              onClick={() => startTransition(() => setMemberActive(member.id, !member.active))}
-            >
-              {member.active ? "Deactivate" : "Activate"}
-            </button>
-            <ConfirmDeleteButton
-              action={deleteMember.bind(null, member.id)}
-              confirmText={`Remove member "${member.name}"? Their tasks will be unassigned.`}
-            />
+    <div className="panel-strong flex h-full flex-col p-5">
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl text-base font-semibold text-white"
+            style={{ backgroundColor: member.color }}
+          >
+            {member.name[0]}
+          </span>
+          <div>
+            <strong className="text-base text-ink">{member.name}</strong>
+            {member.email && <div className="mt-1 text-sm text-muted">{member.email}</div>}
           </div>
         </div>
+        <span
+          className={`status-chip ${member.active ? "bg-emerald-100 text-emerald-700" : "bg-sand text-muted"}`}
+        >
+          {member.active ? "Active" : "Inactive"}
+        </span>
+      </div>
+      <div className="mt-auto flex items-center justify-between gap-3">
+        <button
+          type="button"
+          className="btn-secondary"
+          disabled={isPending}
+          onClick={() => startTransition(() => setMemberActive(member.id, !member.active))}
+        >
+          {member.active ? "Deactivate" : "Activate"}
+        </button>
+        <ConfirmDeleteButton
+          action={deleteMember.bind(null, member.id)}
+          confirmText={`Remove member "${member.name}"? Their tasks will be unassigned.`}
+        />
       </div>
     </div>
   );

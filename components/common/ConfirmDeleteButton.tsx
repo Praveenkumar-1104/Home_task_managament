@@ -14,7 +14,7 @@ export default function ConfirmDeleteButton({
   return (
     <button
       type="button"
-      className={className ?? "btn btn-sm btn-outline-danger"}
+      className={className ?? "btn-secondary border-rose-200 text-rose-700 hover:bg-rose-50"}
       onClick={() => {
         if (confirm(confirmText)) {
           action();

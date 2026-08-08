@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { createClient } from "@/lib/supabase/client";
 import type { Notification } from "@/types/notification";
 
-const supabase = supabaseBrowser;
+const supabase = createClient();
 
 function formatNotificationPayload(payload: any): Notification {
   return {

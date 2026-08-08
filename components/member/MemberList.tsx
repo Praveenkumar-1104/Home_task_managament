@@ -5,21 +5,26 @@ export default async function MemberList() {
   const members = await getMembers();
 
   return (
-    <div className="card shadow-sm mb-4">
-      <div className="card-header">Members</div>
-      <div className="list-group list-group-flush">
+    <div className="panel mb-4 overflow-hidden">
+      <div className="border-b border-hairline px-5 py-4">
+        <h2 className="section-title">Members</h2>
+      </div>
+      <div className="divide-y divide-hairline">
         {members.length === 0 && (
-          <div className="list-group-item text-muted small">
+          <div className="px-5 py-6 text-sm text-muted">
             No members yet. <Link href="/members">Add one</Link>.
           </div>
         )}
         {members.map((member) => (
-          <div key={member.id} className="list-group-item d-flex justify-content-between align-items-center">
+          <div key={member.id} className="flex items-center justify-between gap-4 px-5 py-4">
             <div>
-              <strong>{member.name}</strong>
-              <div className="small text-muted">{member.active ? "Active" : "Inactive"}</div>
+              <strong className="text-sm text-ink">{member.name}</strong>
+              <div className="text-sm text-muted">{member.active ? "Active" : "Inactive"}</div>
             </div>
-            <span className="badge rounded-pill" style={{ backgroundColor: member.color }}>
+            <span
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white"
+              style={{ backgroundColor: member.color }}
+            >
               {member.name[0]}
             </span>
           </div>

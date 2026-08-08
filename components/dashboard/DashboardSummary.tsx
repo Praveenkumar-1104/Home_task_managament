@@ -15,23 +15,22 @@ export default async function DashboardSummary() {
   const todayAssignments = tasks.filter((t) => t.due_date === today);
 
   const stats = [
-    { label: "Total Boards", value: boards.length },
-    { label: "Total Tasks", value: tasks.length },
-    { label: "Pending Tasks", value: pending.length },
-    { label: "Completed Tasks", value: completed.length },
-    { label: "Overdue Tasks", value: overdue.length },
-    { label: "Today's Assignments", value: todayAssignments.length },
+    { label: "Total Boards", value: boards.length, tint: "bg-sky-50 border-sky-100", icon: "bg-sky-100 text-sky-600" },
+    { label: "Total Tasks", value: tasks.length, tint: "bg-violet-50 border-violet-100", icon: "bg-violet-100 text-violet-600" },
+    { label: "Pending Tasks", value: pending.length, tint: "bg-amber-50 border-amber-100", icon: "bg-amber-100 text-amber-600" },
+    { label: "Completed Tasks", value: completed.length, tint: "bg-emerald-50 border-emerald-100", icon: "bg-emerald-100 text-emerald-600" },
+    { label: "Overdue Tasks", value: overdue.length, tint: "bg-rose-50 border-rose-100", icon: "bg-rose-100 text-rose-600" },
+    { label: "Today's Assignments", value: todayAssignments.length, tint: "bg-teal-50 border-teal-100", icon: "bg-teal-100 text-teal-600" },
   ];
 
   return (
-    <div className="row g-3">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {stats.map((item) => (
-        <div key={item.label} className="col-sm-6 col-xl-4">
-          <div className="card shadow-sm h-100">
-            <div className="card-body">
-              <p className="text-uppercase text-muted mb-2 small">{item.label}</p>
-              <h3 className="mb-0">{item.value}</h3>
-            </div>
+        <div key={item.label} className={`panel p-5 ${item.tint}`}>
+          <p className="eyebrow mb-3">{item.label}</p>
+          <div className="flex items-end justify-between gap-3">
+            <h3 className="text-4xl font-semibold tracking-tight text-ink">{item.value}</h3>
+            <div className={`icon-chip h-12 w-12 ${item.icon}`} />
           </div>
         </div>
       ))}

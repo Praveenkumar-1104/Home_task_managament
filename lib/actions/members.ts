@@ -10,6 +10,7 @@ function revalidateMemberPaths() {
   revalidatePath("/boards");
   revalidatePath("/");
   revalidatePath("/dashboard");
+  revalidatePath("/profile");
 }
 
 export async function createMember(formData: FormData) {
@@ -28,6 +29,21 @@ export async function createMember(formData: FormData) {
 
 export async function setMemberActive(memberId: string, active: boolean) {
   const { error } = await getSupabase().from("members").update({ active }).eq("id", memberId);
+  if (error) throw new Error(error.message);
+
+  revalidateMemberPaths();
+}
+
+export async function updateMemberProfile(memberId: string, formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim();
+  const color = String(formData.get("color") ?? "").trim() || MEMBER_COLORS[0];
+  if (!name) throw new Error("Name is required.");
+
+  const { error } = await getSupabase()
+    .from("members")
+    .update({ name, email: email || null, color })
+    .eq("id", memberId);
   if (error) throw new Error(error.message);
 
   revalidateMemberPaths();

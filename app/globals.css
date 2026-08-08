@@ -4,6 +4,22 @@
 
 :root {
   color-scheme: light;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --panel-strong: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #4f46e5;
+  --primary-strong: #4338ca;
+  --primary-soft: rgba(79, 70, 229, 0.1);
+  --danger: #dc2626;
+  --sand: #f1f5f9;
+  --sand-strong: #e2e8f0;
+  --accent: #0ea5e9;
+  --sidebar-bg: #1e1b4b;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-muted: #a5b4fc;
 }
 
 html {
@@ -11,7 +27,10 @@ html {
 }
 
 body {
-  @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+  @apply min-h-screen antialiased;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans, "Inter"), "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   margin: 0;
 }
 
@@ -24,4 +43,151 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border shadow-sm;
+    background: var(--panel);
+    border-color: var(--border);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 20px rgba(15, 23, 42, 0.04);
+  }
+
+  .panel-strong {
+    @apply rounded-2xl border shadow-sm;
+    background: var(--panel-strong);
+    border-color: var(--border);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 28px rgba(15, 23, 42, 0.06);
+  }
+
+  .page-title {
+    @apply text-3xl font-semibold tracking-tight sm:text-4xl;
+    color: var(--text);
+  }
+
+  .panel-header {
+    @apply relative overflow-hidden;
+  }
+
+  .panel-header::before {
+    content: "";
+    @apply absolute inset-x-0 top-0 h-1;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+
+  .page-copy {
+    @apply text-sm leading-6 sm:text-base;
+    color: var(--muted);
+  }
+
+  .section-title {
+    @apply text-lg font-semibold;
+    color: var(--text);
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em];
+    color: var(--muted);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition;
+    background: var(--primary);
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-strong);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border px-4 py-2.5 text-sm font-semibold transition;
+    border-color: var(--border);
+    background: #ffffff;
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    background: var(--sand);
+  }
+
+  .field-label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-[0.12em];
+    color: var(--muted);
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border px-4 py-3 text-sm outline-none transition;
+    border-color: var(--border);
+    background: #ffffff;
+    color: var(--text);
+  }
+
+  .field-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
+  }
+
+  .status-chip {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .icon-chip {
+    @apply inline-flex shrink-0 items-center justify-center rounded-xl;
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+  }
+
+  /* App shell */
+  .app-shell {
+    @apply min-h-screen lg:grid lg:grid-cols-[260px_minmax(0,1fr)];
+  }
+
+  .app-sidebar {
+    @apply hidden border-r lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:gap-6 lg:p-5;
+    background: var(--sidebar-bg);
+    border-color: var(--sidebar-border);
+  }
+
+  .app-content {
+    @apply min-w-0 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:py-8;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition;
+    color: var(--sidebar-muted);
+  }
+
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+  }
+
+  .nav-link-active {
+    @apply flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold transition;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  /* Mobile bottom tab bar */
+  .bottom-nav {
+    @apply fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t px-2 py-2 lg:hidden;
+    background: var(--panel-strong);
+    border-color: var(--border);
+    box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.05);
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  .bottom-nav-link {
+    @apply flex flex-1 flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition;
+    color: var(--muted);
+  }
+
+  .bottom-nav-link-active {
+    color: var(--primary);
+  }
 }

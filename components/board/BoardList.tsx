@@ -5,11 +5,13 @@ export default async function BoardList() {
   const boards = await getBoards();
 
   return (
-    <div className="card shadow-sm">
-      <div className="card-header">Boards</div>
-      <div className="list-group list-group-flush">
+    <div className="panel overflow-hidden">
+      <div className="border-b border-hairline px-5 py-4">
+        <h2 className="section-title">Boards</h2>
+      </div>
+      <div className="divide-y divide-hairline">
         {boards.length === 0 && (
-          <div className="list-group-item text-muted small">
+          <div className="px-5 py-6 text-sm text-muted">
             No boards yet. <Link href="/boards">Create one</Link>.
           </div>
         )}
@@ -17,10 +19,10 @@ export default async function BoardList() {
           <Link
             key={board.id}
             href={`/boards/${board.id}`}
-            className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-white/80"
           >
-            <span>{board.name}</span>
-            <span className="badge rounded-pill" style={{ backgroundColor: board.color }}>&nbsp;</span>
+            <span className="font-medium text-ink">{board.name}</span>
+            <span className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: board.color }} />
           </Link>
         ))}
       </div>

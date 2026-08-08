@@ -1,40 +1,59 @@
 "use client";
 
 import { useTransition } from "react";
-import { assignMember, completeAndRotate, deleteTask, updateTaskStatus } from "@/lib/actions/tasks";
+import { completeTask, deleteTask, setTaskGroup, updateTaskStatus } from "@/lib/actions/tasks";
 import ConfirmDeleteButton from "@/components/common/ConfirmDeleteButton";
-import type { Member, Task } from "@/types";
+import type { Task } from "@/types";
 import type { TaskWithRelations } from "@/lib/db/tasks";
+import type { PartnerGroupWithMembers } from "@/lib/db/partnerGroups";
 
 const PRIORITY_BADGE: Record<string, string> = {
-  low: "bg-secondary",
-  medium: "bg-warning text-dark",
-  high: "bg-danger",
+  low: "bg-sand text-ink",
+  medium: "bg-amber-100 text-amber-800",
+  high: "bg-rose-100 text-rose-700",
 };
+
+function MemberChips({ members }: { members: { id: string; name: string; color: string }[] }) {
+  if (members.length === 0) return <p className="text-sm text-muted">Unassigned</p>;
+  return (
+    <div className="flex flex-wrap gap-2">
+      {members.map((m) => (
+        <span
+          key={m.id}
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-white"
+          style={{ backgroundColor: m.color }}
+        >
+          {m.name}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export default function TaskCard({
   task,
-  members,
+  partnerGroups,
 }: {
   task: TaskWithRelations;
-  members: Member[];
+  partnerGroups: PartnerGroupWithMembers[];
 }) {
   const [isPending, startTransition] = useTransition();
+  const isCompleted = task.status === "completed";
 
   return (
-    <div className="card shadow-sm mb-3">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-start">
-          <h6 className="card-title mb-1">{task.title}</h6>
-          <span className={`badge ${PRIORITY_BADGE[task.priority ?? "medium"]}`}>{task.priority}</span>
-        </div>
-        {task.description && <p className="card-text small text-muted mb-2">{task.description}</p>}
-        {task.due_date && <p className="small text-muted mb-2">Due {task.due_date}</p>}
+    <div className="panel-strong mb-4 p-4">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <h3 className="text-base font-semibold text-ink">{task.title}</h3>
+        <span className={`status-chip ${PRIORITY_BADGE[task.priority ?? "medium"]}`}>{task.priority}</span>
+      </div>
+      {task.description && <p className="mb-3 text-sm leading-6 text-muted">{task.description}</p>}
+      {task.due_date && <p className="mb-4 text-sm text-muted">Due {task.due_date}</p>}
 
-        <div className="mb-2">
-          <label className="form-label small text-muted mb-1">Status</label>
+      {!isCompleted && (
+        <div className="mb-4">
+          <label className="field-label">Status</label>
           <select
-            className="form-select form-select-sm"
+            className="field-input py-2.5"
             value={task.status}
             disabled={isPending}
             onChange={(e) =>
@@ -45,53 +64,56 @@ export default function TaskCard({
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
           </select>
         </div>
+      )}
 
-        <div className="mb-2">
-          <label className="form-label small text-muted mb-1">Assigned To</label>
+      <div className="mb-3">
+        <label className="field-label">Assigned To</label>
+        <MemberChips members={task.assignees} />
+      </div>
+
+      {!isCompleted && (
+        <div className="mb-4">
+          <label className="field-label">Partner Group{task.partnerGroup ? ` (${task.partnerGroup.name})` : ""}</label>
           <select
-            className="form-select form-select-sm"
-            value={task.assigned_to ?? ""}
+            className="field-input py-2.5"
+            value={task.partnerGroup?.id ?? ""}
             disabled={isPending}
             onChange={(e) =>
               startTransition(() => {
-                assignMember(task.id, task.board_id, e.target.value);
+                setTaskGroup(task.id, task.board_id, e.target.value);
               })
             }
           >
-            <option value="">Unassigned</option>
-            {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
+            <option value="">Unassigned (no auto-rotation)</option>
+            {partnerGroups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
               </option>
             ))}
           </select>
+          <p className="mt-1 text-xs text-muted">Completing this task auto-rotates to the group's next batch.</p>
         </div>
+      )}
 
-        {task.next && (
-          <p className="small text-muted mb-2">
-            Next up: <strong>{task.next.name}</strong>
-          </p>
+      <div className="flex flex-wrap items-center gap-2">
+        {isCompleted ? (
+          <span className="status-chip bg-emerald-100 text-emerald-700">Completed</span>
+        ) : (
+          <button
+            type="button"
+            className="btn-primary"
+            disabled={isPending}
+            onClick={() => startTransition(() => completeTask(task.id, task.board_id))}
+          >
+            Complete
+          </button>
         )}
-
-        <div className="d-flex gap-2 flex-wrap">
-          {task.next_member && (
-            <button
-              type="button"
-              className="btn btn-sm btn-success"
-              disabled={isPending}
-              onClick={() => startTransition(() => completeAndRotate(task.id, task.board_id))}
-            >
-              Complete &amp; Rotate
-            </button>
-          )}
-          <ConfirmDeleteButton
-            action={deleteTask.bind(null, task.id, task.board_id)}
-            confirmText={`Delete task "${task.title}"?`}
-          />
-        </div>
+        <ConfirmDeleteButton
+          action={deleteTask.bind(null, task.id, task.board_id)}
+          confirmText={`Delete task "${task.title}"?`}
+        />
       </div>
     </div>
   );
